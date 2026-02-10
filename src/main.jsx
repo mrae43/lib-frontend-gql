@@ -4,6 +4,7 @@ import App from './App.jsx';
 
 import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const client = new ApolloClient({
 	link: new HttpLink({
@@ -34,14 +35,16 @@ const ALL_BOOKS = gql`
 	}
 `;
 
-client.query({ ALL_AUTHORS, ALL_BOOKS }).then((response) => {
+client.query({ query: ALL_AUTHORS }).then((response) => {
 	console.log(response.data);
 });
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<ApolloProvider client={client}>
-			<App />
-		</ApolloProvider>
+		<Router>
+			<ApolloProvider client={client}>
+				<App />
+			</ApolloProvider>
+		</Router>
 	</StrictMode>,
 );
