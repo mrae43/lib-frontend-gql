@@ -4,15 +4,15 @@ import { ALL_BOOKS } from '../queries';
 
 const Books = ({ show }) => {
 	const [genre, setGenre] = useState('all');
-	const result = useQuery(ALL_BOOKS);
+	const { data, loading, error } = useQuery(ALL_BOOKS);
 	if (!show) {
 		return null;
 	}
 
-	if (result.loading) return <div>loading...</div>;
-	if (result.error) return <div>error: {result.error.message}</div>;
+	if (loading) return <div>loading...</div>;
+	if (error) return <div>error: {error.message}</div>;
 
-	const books = result.data.allBooks;
+	const books = data.allBooks;
 
 	const allGenres = [...new Set(books.flatMap((b) => b.genres))];
 
