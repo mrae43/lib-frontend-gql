@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client/react';
 import { ALL_BOOKS } from '../queries';
 
-const Books = (props) => {
+const Books = ({ show }) => {
 	const result = useQuery(ALL_BOOKS);
-	if (!props.show) {
+	if (!show) {
 		return null;
 	}
 
