@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client/react';
 import { LOGIN } from '../queries';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ setError, setToken }) => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const [errorMessage, setErrorMessage] = useState(null);
 
+	const navigate = useNavigate();
 	const [login] = useMutation(LOGIN, {
 		onCompleted: (data) => {
 			const token = data.login.value;
 			setToken(token);
 			localStorage.setItem('library-user-token', token);
+			navigate('/');
 		},
 		onError: (error) => {
 			setError(error.message);
@@ -25,13 +27,12 @@ const LoginForm = ({ setError, setToken }) => {
 			await login({ variables: { username, password } });
 			console.log(`name: ${username}, password: ${password}`);
 		} catch (error) {
-			setErrorMessage(error.message);
+			setError(error.message);
 		}
 	};
 
 	return (
 		<div>
-			{errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
 			<form onSubmit={submit}>
 				<div>
 					username
