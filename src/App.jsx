@@ -47,6 +47,11 @@ const App = () => {
 						<button onClick={() => setPage('recommend')}>recommend</button>
 					</Link>
 					<button onClick={onLogout}>logout</button>
+					{errorMessage && (
+						<div style={{ color: 'red', marginTop: '1rem' }}>
+							{errorMessage}
+						</div>
+					)}
 				</div>
 			)}
 
@@ -76,7 +81,7 @@ const App = () => {
 					path='/add_book'
 					element={
 						token ? (
-							<NewBook show={page === 'add'} />
+							<NewBook show={page === 'add'} setError={notify} />
 						) : (
 							<Navigate to={'/login'} />
 						)
@@ -97,9 +102,6 @@ const App = () => {
 					element={<LoginForm setError={notify} setToken={setToken} />}
 				/>
 			</Routes>
-			{errorMessage && (
-				<div style={{ color: 'red', marginTop: '1rem' }}>{errorMessage}</div>
-			)}
 		</div>
 	);
 };
