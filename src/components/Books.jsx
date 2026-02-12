@@ -14,10 +14,10 @@ const Books = ({ show }) => {
 
 	const books = result.data.allBooks;
 
-	const allGenres = [...new Set(books.flatMap((b) => b.genre))];
+	const allGenres = [...new Set(books.flatMap((b) => b.genres))];
 
 	const filteredBooks =
-		genre === 'all' ? books : books.filter((b) => b.genres.include(genre));
+		genre === 'all' ? books : books.filter((b) => b.genres.includes(genre));
 
 	return (
 		<div>
