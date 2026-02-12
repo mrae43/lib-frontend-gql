@@ -2,19 +2,18 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client/react';
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
 
-const NewBook = (props) => {
+const NewBook = ({ setErrorMessage, show }) => {
 	const [title, setTitle] = useState('');
 	const [author, setAuthor] = useState('');
 	const [published, setPublished] = useState(0);
 	const [genre, setGenre] = useState('');
 	const [genres, setGenres] = useState([]);
-	const [errorMessage, setErrorMessage] = useState(null);
 
 	const [addBook] = useMutation(ADD_BOOK, {
 		refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
 	});
 
-	if (!props.show) {
+	if (!show) {
 		return null;
 	}
 
@@ -24,8 +23,6 @@ const NewBook = (props) => {
 		try {
 			await addBook({ variables: { title, author, published, genres } });
 			console.log('add book...');
-
-			setErrorMessage(null);
 			setTitle('');
 			setPublished('');
 			setAuthor('');
@@ -43,7 +40,6 @@ const NewBook = (props) => {
 
 	return (
 		<div>
-			{errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
 			<form onSubmit={submit}>
 				<div>
 					title
