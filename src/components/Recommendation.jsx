@@ -31,7 +31,7 @@ const Recommendation = ({ show }) => {
 			<table>
 				<tbody>
 					<tr>
-						<th>book</th>
+						<th>title</th>
 						<th>author</th>
 						<th>published</th>
 					</tr>
