@@ -1,25 +1,38 @@
+import { useState } from 'react';
 import { useQuery } from '@apollo/client/react';
 import { ALL_BOOKS } from '../queries';
 
 const Books = ({ show }) => {
-	const result = useQuery(ALL_BOOKS);
+	const [genre, setGenre] = useState('all');
+	const { data, loading, error } = useQuery(ALL_BOOKS, {
+		variables: { genre: genre === 'all' ? null : genre },
+	});
 	if (!show) {
 		return null;
 	}
 
-	if (result.loading) return <div>loading...</div>;
-	if (result.error) return <div>error: {result.error.message}</div>;
+	if (loading) return <div>loading...</div>;
+	if (error) return <div>error: {error.message}</div>;
 
-	const books = result.data.allBooks;
+	const books = data.allBooks;
+
+	const allGenres = [...new Set(books.flatMap((b) => b.genres))];
 
 	return (
 		<div>
 			<h2>books</h2>
-
+			<div>
+				{allGenres.map((g) => (
+					<button key={g} onClick={() => setGenre(g)}>
+						{g}
+					</button>
+				))}
+				<button onClick={() => setGenre('all')}>all genre</button>
+			</div>
 			<table>
 				<tbody>
 					<tr>
-						<th></th>
+						<th>title</th>
 						<th>author</th>
 						<th>published</th>
 					</tr>

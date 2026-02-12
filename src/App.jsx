@@ -6,6 +6,7 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import LoginForm from './components/LoginForm';
+import Recommendation from './components/Recommendation';
 
 const App = () => {
 	const [page, setPage] = useState('authors');
@@ -42,7 +43,15 @@ const App = () => {
 					<Link to={'/add_book'}>
 						<button onClick={() => setPage('add')}>add book</button>
 					</Link>
+					<Link to={'/recommend'}>
+						<button onClick={() => setPage('recommend')}>recommend</button>
+					</Link>
 					<button onClick={onLogout}>logout</button>
+					{errorMessage && (
+						<div style={{ color: 'red', marginTop: '1rem' }}>
+							{errorMessage}
+						</div>
+					)}
 				</div>
 			)}
 
@@ -72,7 +81,17 @@ const App = () => {
 					path='/add_book'
 					element={
 						token ? (
-							<NewBook show={page === 'add'} />
+							<NewBook show={page === 'add'} setError={notify} />
+						) : (
+							<Navigate to={'/login'} />
+						)
+					}
+				/>
+				<Route
+					path='/recommend'
+					element={
+						token ? (
+							<Recommendation show={page === 'recommend'} />
 						) : (
 							<Navigate to={'/login'} />
 						)
@@ -83,9 +102,6 @@ const App = () => {
 					element={<LoginForm setError={notify} setToken={setToken} />}
 				/>
 			</Routes>
-			{errorMessage && (
-				<div style={{ color: 'red', marginTop: '1rem' }}>{errorMessage}</div>
-			)}
 		</div>
 	);
 };
