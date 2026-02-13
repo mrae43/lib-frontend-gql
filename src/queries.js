@@ -10,15 +10,21 @@ export const ALL_AUTHORS = gql`
 	}
 `;
 
+const BOOK_DETAILS = gql`
+	fragment BookDetails on Book {
+		title
+		published
+		author {
+			name
+		}
+		genres
+	}
+`;
+
 export const ALL_BOOKS = gql`
 	query {
 		allBooks {
-			title
-			published
-			author {
-				name
-			}
-			genres
+			...BookDetails
 		}
 	}
 `;
@@ -71,4 +77,13 @@ export const LOGIN = gql`
 			value
 		}
 	}
+`;
+
+export const BOOK_ADDED = gql`
+	subscription {
+		bookAdded {
+			...BookDetails
+		}
+	}
+	${BOOK_DETAILS}
 `;

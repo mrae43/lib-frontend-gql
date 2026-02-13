@@ -7,6 +7,7 @@ const Books = ({ show }) => {
 	const { data, loading, error } = useQuery(ALL_BOOKS, {
 		variables: { genre: genre === 'all' ? null : genre },
 	});
+	
 	if (!show) {
 		return null;
 	}
