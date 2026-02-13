@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useApolloClient } from '@apollo/client/react';
+import { useApolloClient, useSubscription } from '@apollo/client/react';
 
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import LoginForm from './components/LoginForm';
 import Recommendation from './components/Recommendation';
+import { BOOK_ADDED } from './queries';
 
 const App = () => {
 	const [page, setPage] = useState('authors');
@@ -16,6 +17,18 @@ const App = () => {
 	);
 
 	const client = useApolloClient();
+
+	useSubscription(BOOK_ADDED, {
+		onData: ({ data }) => {
+			console.log('BOOK_ADDED data:', data);
+			if (!data || !data.data || !data.data.bookAdded) {
+				console.warn('Unexpected data shape');
+				return;
+			}
+			const book = data.data?.bookAdded;
+			window.alert(`New book "${book.title}" is added to the library`);
+		},
+	});
 
 	const onLogout = () => {
 		setToken(null);
