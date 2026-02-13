@@ -8,6 +8,7 @@ import NewBook from './components/NewBook';
 import LoginForm from './components/LoginForm';
 import Recommendation from './components/Recommendation';
 import { BOOK_ADDED } from './queries';
+import { addBookToCache } from './utils/apolloCache';
 
 const App = () => {
 	const [page, setPage] = useState('authors');
@@ -20,13 +21,13 @@ const App = () => {
 
 	useSubscription(BOOK_ADDED, {
 		onData: ({ data }) => {
-			console.log('BOOK_ADDED data:', data);
 			if (!data || !data.data || !data.data.bookAdded) {
 				console.warn('Unexpected data shape');
 				return;
 			}
-			const book = data.data?.bookAdded;
-			window.alert(`New book "${book.title}" is added to the library`);
+			const addedBook = data.data?.bookAdded;
+			window.alert(`New book "${addedBook.title}" is added to the library`);
+			addBookToCache(client.cache, addedBook);
 		},
 	});
 
