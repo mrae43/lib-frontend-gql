@@ -27,6 +27,7 @@ export const ALL_BOOKS = gql`
 			...BookDetails
 		}
 	}
+	${BOOK_DETAILS}
 `;
 
 export const ME = gql`
