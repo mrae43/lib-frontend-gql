@@ -38,7 +38,7 @@ const splitLink = ApolloLink.split(
 		const definition = getMainDefinition(query);
 		return (
 			definition.kind === 'OperationDefinition' &&
-			definition.operation === 'subscripption'
+			definition.operation === 'subscription'
 		);
 	},
 	wsLink,
