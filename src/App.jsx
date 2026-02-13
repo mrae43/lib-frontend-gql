@@ -45,51 +45,38 @@ const App = () => {
 
 	return (
 		<div>
-			{token && (
-				<div>
-					<Link to={'/'}>
-						<button onClick={() => setPage('authors')}>authors</button>
+			<div>
+				<Link to={'/'}>
+					<button onClick={() => setPage('authors')}>authors</button>
+				</Link>
+				<Link to={'/books'}>
+					<button onClick={() => setPage('books')}>books</button>
+				</Link>
+				{token && (
+					<>
+						<Link to={'/add_book'}>
+							<button onClick={() => setPage('add')}>add book</button>
+						</Link>
+						<Link to={'/recommend'}>
+							<button onClick={() => setPage('recommend')}>recommend</button>
+						</Link>
+						<button onClick={onLogout}>logout</button>
+					</>
+				)}
+				{!token && (
+					<Link to={'/login'}>
+						<button>login</button>
 					</Link>
-					<Link to={'/books'}>
-						<button onClick={() => setPage('books')}>books</button>
-					</Link>
-					<Link to={'/add_book'}>
-						<button onClick={() => setPage('add')}>add book</button>
-					</Link>
-					<Link to={'/recommend'}>
-						<button onClick={() => setPage('recommend')}>recommend</button>
-					</Link>
-					<button onClick={onLogout}>logout</button>
-					{errorMessage && (
-						<div style={{ color: 'red', marginTop: '1rem' }}>
-							{errorMessage}
-						</div>
-					)}
-				</div>
-			)}
+				)}
+				{errorMessage && (
+					<div style={{ color: 'red', marginTop: '1rem' }}>{errorMessage}</div>
+				)}
+			</div>
 
 			<Routes>
-				<Route
-					path='/'
-					element={
-						token ? (
-							<Authors show={page === 'authors'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
-				/>
+				<Route path='/' element={<Authors show={page === 'authors'} />} />
+				<Route path='/books' element={<Books show={page === 'books'} />} />
 				{/* Protected Routes */}
-				<Route
-					path='/books'
-					element={
-						token ? (
-							<Books show={page === 'books'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
-				/>
 				<Route
 					path='/add_book'
 					element={
