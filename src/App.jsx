@@ -9,7 +9,6 @@ import LoginForm from './components/LoginForm';
 import Recommendation from './components/Recommendation';
 
 const App = () => {
-	const [page, setPage] = useState('authors');
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [token, setToken] = useState(
 		localStorage.getItem('library-user-token'),
@@ -32,56 +31,46 @@ const App = () => {
 
 	return (
 		<div>
-			{token && (
-				<div>
-					<Link to={'/'}>
-						<button onClick={() => setPage('authors')}>authors</button>
+			<nav>
+				<Link to={'/'}>
+					<button type='button'>authors</button>
+				</Link>
+				<Link to={'/books'}>
+					<button type='button'>books</button>
+				</Link>
+				{token && (
+					<>
+						<Link to={'/add_book'}>
+							<button type='button'>add book</button>
+						</Link>
+						<Link to={'/recommend'}>
+							<button type='button'>recommend</button>
+						</Link>
+						<button onClick={onLogout}>logout</button>
+					</>
+				)}
+				{!token && (
+					<Link to={'/login'}>
+						<button type='button'>login</button>
 					</Link>
-					<Link to={'/books'}>
-						<button onClick={() => setPage('books')}>books</button>
-					</Link>
-					<Link to={'/add_book'}>
-						<button onClick={() => setPage('add')}>add book</button>
-					</Link>
-					<Link to={'/recommend'}>
-						<button onClick={() => setPage('recommend')}>recommend</button>
-					</Link>
-					<button onClick={onLogout}>logout</button>
-					{errorMessage && (
-						<div style={{ color: 'red', marginTop: '1rem' }}>
-							{errorMessage}
-						</div>
-					)}
-				</div>
-			)}
+				)}
+				{errorMessage && (
+					<div style={{ color: 'red', marginTop: '1rem' }}>{errorMessage}</div>
+				)}
+			</nav>
 
 			<Routes>
-				<Route
-					path='/'
-					element={
-						token ? (
-							<Authors show={page === 'authors'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
-				/>
-				{/* Protected Routes */}
+				<Route path='/' element={<Authors />} />
 				<Route
 					path='/books'
-					element={
-						token ? (
-							<Books show={page === 'books'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
+					element={<Books client={client} notify={notify} />}
 				/>
+				{/* Protected Routes */}
 				<Route
 					path='/add_book'
 					element={
 						token ? (
-							<NewBook show={page === 'add'} setError={notify} />
+							<NewBook setError={notify} notify={notify} />
 						) : (
 							<Navigate to={'/login'} />
 						)
@@ -89,13 +78,7 @@ const App = () => {
 				/>
 				<Route
 					path='/recommend'
-					element={
-						token ? (
-							<Recommendation show={page === 'recommend'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
+					element={token ? <Recommendation /> : <Navigate to={'/login'} />}
 				/>
 				<Route
 					path='/login'

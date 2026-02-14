@@ -1,22 +1,41 @@
 import { useState } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { ALL_BOOKS } from '../queries';
+import { useQuery, useSubscription } from '@apollo/client/react';
+import { ALL_BOOKS, BOOK_ADDED } from '../queries';
+import { addBookToCache } from '../utils/apolloCache';
 
-const Books = ({ show }) => {
+const Books = ({ client, notify }) => {
 	const [genre, setGenre] = useState('all');
-	const { data, loading, error } = useQuery(ALL_BOOKS, {
+	const {
+		data: filteredDataBooks,
+		loading,
+		error,
+	} = useQuery(ALL_BOOKS, {
 		variables: { genre: genre === 'all' ? null : genre },
 	});
-	if (!show) {
-		return null;
-	}
+
+	const { data: fullDataBooks } = useQuery(ALL_BOOKS, {
+		variables: { genre: null },
+	});
+
+	useSubscription(BOOK_ADDED, {
+		onData: ({ data }) => {
+			if (!data || !data.data || !data.data.bookAdded) {
+				console.warn('Unexpected data shape');
+				return;
+			}
+			const addedBook = data.data.bookAdded;
+			notify(`New book "${addedBook.title}" is added to the library`);
+			addBookToCache(client.cache, addedBook, genre);
+		},
+	});
 
 	if (loading) return <div>loading...</div>;
 	if (error) return <div>error: {error.message}</div>;
 
-	const books = data.allBooks;
-
-	const allGenres = [...new Set(books.flatMap((b) => b.genres))];
+	const books = filteredDataBooks.allBooks;
+	const allGenres = fullDataBooks
+		? [...new Set(fullDataBooks.allBooks.flatMap((b) => b.genres))]
+		: [];
 
 	return (
 		<div>
