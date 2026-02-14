@@ -1,7 +1,9 @@
 import { ALL_BOOKS } from '../queries';
 
-export const addBookToCache = (cache, bookToAdd) => {
-	cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+export const addBookToCache = (cache, bookToAdd, currentGenre) => {
+	const variables =
+		currentGenre === 'all' ? { genre: null } : { genre: currentGenre };
+	cache.updateQuery({ query: ALL_BOOKS, variables }, ({ allBooks }) => {
 		const bookExists = allBooks.some((book) => book.id === bookToAdd.id);
 
 		if (bookExists) {
