@@ -11,7 +11,6 @@ import { BOOK_ADDED } from './queries';
 import { addBookToCache } from './utils/apolloCache';
 
 const App = () => {
-	const [page, setPage] = useState('authors');
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [token, setToken] = useState(
 		localStorage.getItem('library-user-token'),
@@ -46,57 +45,47 @@ const App = () => {
 
 	return (
 		<div>
-			<div>
+			<nav>
 				<Link to={'/'}>
-					<button onClick={() => setPage('authors')}>authors</button>
+					<button type='button'>authors</button>
 				</Link>
 				<Link to={'/books'}>
-					<button onClick={() => setPage('books')}>books</button>
+					<button type='button'>books</button>
 				</Link>
 				{token && (
 					<>
 						<Link to={'/add_book'}>
-							<button onClick={() => setPage('add')}>add book</button>
+							<button type='button'>add book</button>
 						</Link>
 						<Link to={'/recommend'}>
-							<button onClick={() => setPage('recommend')}>recommend</button>
+							<button type='button'>recommend</button>
 						</Link>
 						<button onClick={onLogout}>logout</button>
 					</>
 				)}
 				{!token && (
 					<Link to={'/login'}>
-						<button>login</button>
+						<button type='button'>login</button>
 					</Link>
 				)}
 				{errorMessage && (
 					<div style={{ color: 'red', marginTop: '1rem' }}>{errorMessage}</div>
 				)}
-			</div>
+			</nav>
 
 			<Routes>
-				<Route path='/' element={<Authors show={page === 'authors'} />} />
-				<Route path='/books' element={<Books show={page === 'books'} />} />
+				<Route path='/' element={<Authors />} />
+				<Route path='/books' element={<Books />} />
 				{/* Protected Routes */}
 				<Route
 					path='/add_book'
 					element={
-						token ? (
-							<NewBook show={page === 'add'} setError={notify} />
-						) : (
-							<Navigate to={'/login'} />
-						)
+						token ? <NewBook setError={notify} /> : <Navigate to={'/login'} />
 					}
 				/>
 				<Route
 					path='/recommend'
-					element={
-						token ? (
-							<Recommendation show={page === 'recommend'} />
-						) : (
-							<Navigate to={'/login'} />
-						)
-					}
+					element={token ? <Recommendation /> : <Navigate to={'/login'} />}
 				/>
 				<Route
 					path='/login'
