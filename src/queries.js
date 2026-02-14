@@ -12,6 +12,7 @@ export const ALL_AUTHORS = gql`
 
 const BOOK_DETAILS = gql`
 	fragment BookDetails on Book {
+		id
 		title
 		published
 		author {
@@ -22,8 +23,8 @@ const BOOK_DETAILS = gql`
 `;
 
 export const ALL_BOOKS = gql`
-	query {
-		allBooks {
+	query allBooks($genre: String) {
+		allBooks(genre: $genre) {
 			...BookDetails
 		}
 	}
@@ -52,6 +53,7 @@ export const ADD_BOOK = gql`
 			published: $published
 			genres: $genres
 		) {
+			id
 			title
 			author {
 				name
