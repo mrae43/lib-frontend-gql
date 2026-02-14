@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useApolloClient, useSubscription } from '@apollo/client/react';
+import { useApolloClient } from '@apollo/client/react';
 
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import LoginForm from './components/LoginForm';
 import Recommendation from './components/Recommendation';
-import { BOOK_ADDED } from './queries';
-import { addBookToCache } from './utils/apolloCache';
 
 const App = () => {
 	const [errorMessage, setErrorMessage] = useState(null);
@@ -17,18 +15,6 @@ const App = () => {
 	);
 
 	const client = useApolloClient();
-
-	useSubscription(BOOK_ADDED, {
-		onData: ({ data }) => {
-			if (!data || !data.data || !data.data.bookAdded) {
-				console.warn('Unexpected data shape');
-				return;
-			}
-			const addedBook = data.data?.bookAdded;
-			window.alert(`New book "${addedBook.title}" is added to the library`);
-			addBookToCache(client.cache, addedBook);
-		},
-	});
 
 	const onLogout = () => {
 		setToken(null);
@@ -75,12 +61,19 @@ const App = () => {
 
 			<Routes>
 				<Route path='/' element={<Authors />} />
-				<Route path='/books' element={<Books />} />
+				<Route
+					path='/books'
+					element={<Books client={client} notify={notify} />}
+				/>
 				{/* Protected Routes */}
 				<Route
 					path='/add_book'
 					element={
-						token ? <NewBook setError={notify} /> : <Navigate to={'/login'} />
+						token ? (
+							<NewBook setError={notify} notify={notify} />
+						) : (
+							<Navigate to={'/login'} />
+						)
 					}
 				/>
 				<Route
