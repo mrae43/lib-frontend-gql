@@ -3,7 +3,7 @@ import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
 import { useState } from 'react';
 import Select from 'react-select';
 
-const Authors = ({ show }) => {
+const Authors = () => {
 	const [bornTo, setBornTo] = useState('');
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [selectedOption, setSelectedOption] = useState(null);
@@ -34,9 +34,6 @@ const Authors = ({ show }) => {
 		}
 	};
 
-	if (!show) {
-		return null;
-	}
 	if (result.loading) return <div>loading...</div>;
 	if (result.error) return <div>error: {result.error.message}</div>;
 	const authors = result.data.allAuthors;

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
 import { addBookToCache } from '../utils/apolloCache';
 
-const NewBook = ({ setError, show }) => {
+const NewBook = ({ setError }) => {
 	const [title, setTitle] = useState('');
 	const [author, setAuthor] = useState('');
 	const [published, setPublished] = useState(0);
@@ -19,10 +19,6 @@ const NewBook = ({ setError, show }) => {
 			addBookToCache(cache, addedBook);
 		},
 	});
-
-	if (!show) {
-		return null;
-	}
 
 	const submit = async (event) => {
 		event.preventDefault();

@@ -2,15 +2,11 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client/react';
 import { ALL_BOOKS } from '../queries';
 
-const Books = ({ show }) => {
+const Books = () => {
 	const [genre, setGenre] = useState('all');
 	const { data, loading, error } = useQuery(ALL_BOOKS, {
 		variables: { genre: genre === 'all' ? null : genre },
 	});
-	
-	if (!show) {
-		return null;
-	}
 
 	if (loading) return <div>loading...</div>;
 	if (error) return <div>error: {error.message}</div>;
